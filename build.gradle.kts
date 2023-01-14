@@ -15,6 +15,7 @@ dependencies {
     implementation("io.mockk:mockk:1.13.3")
 
     testImplementation(kotlin("test"))
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.4")
 }
 
 tasks.test {
