@@ -20,6 +20,11 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+
+    // to resolve mockk issue caused by Java module system (reference: https://github.com/mockk/mockk/blob/master/doc/md/jdk16-access-exceptions.md)
+    jvmArgs(
+        "--add-opens", "java.base/java.time=ALL-UNNAMED",
+    )
 }
 
 tasks.withType<KotlinCompile> {
