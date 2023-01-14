@@ -8,10 +8,10 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
 
-private val mockDates: Stack<LocalDate> = Stack()
+private val freezingTimes = Stack<FreezingTime<*, *>>()
 
 fun freeze(mockDate: LocalDate, block: () -> Unit) {
-    mockDates.push(mockDate)
+    freezingTimes.push(FreezingTime.LocalDate(mockDate))
     mockTime(mockDate)
 
     try {
@@ -20,16 +20,27 @@ fun freeze(mockDate: LocalDate, block: () -> Unit) {
         /****************************************
          * DO NOT USE `return` TO REDUCE INDENT *
          ****************************************/
-        mockDates.pop()
+        freezingTimes.pop()
 
-        // when there's no nested mocking
-        if (mockDates.isEmpty()) {
-            unmockTime()
-        } else {
+        when (freezingTimes.isEmpty()) {
+            // when there's no nested mocking
+            true -> {
+                unmockTime()
+            }
+
             // when there's nested mocking
-            val previousMockDate: LocalDate = mockDates.peek()
-            mockTime(previousMockDate)
+            false -> {
+                val previousFreezingTime = freezingTimes.peek()
+                mockTime(previousFreezingTime)
+            }
         }
+    }
+}
+
+private fun mockTime(time: FreezingTime<*, *>) {
+    when (time) {
+        is FreezingTime.LocalDate -> mockTime(time.value)
+        is FreezingTime.LocalDateTime -> TODO()
     }
 }
 
