@@ -12,7 +12,9 @@ private val freezingTimes = Stack<FreezingTime<*, *>>()
 
 private typealias UnitBlock = () -> Unit
 
-fun freeze(mockDate: LocalDate, block: UnitBlock) = freeze(FreezingTime.LocalDate(mockDate), block)
+fun freeze(date: LocalDate, block: UnitBlock) = freeze(FreezingTime.LocalDate(date), block)
+
+fun freeze(dateTime: LocalDateTime, block: UnitBlock) = freeze(FreezingTime.LocalDateTime(dateTime), block)
 
 private fun freeze(time: FreezingTime<*, *>, block: UnitBlock) {
     freezingTimes.push(time)
@@ -43,17 +45,27 @@ private fun freeze(time: FreezingTime<*, *>, block: UnitBlock) {
 
 private fun mockTime(time: FreezingTime<*, *>) {
     when (time) {
-        is FreezingTime.LocalDate -> mockTime(time.value)
-        is FreezingTime.LocalDateTime -> TODO()
+        is FreezingTime.LocalDate -> {
+            val date = time.value
+
+            mockkStatic(LocalDate::class)
+            every { LocalDate.now() } returns date
+
+            mockkStatic(LocalDateTime::class)
+            every { LocalDateTime.now() } returns LocalDateTime.of(date, LocalTime.MIN)
+        }
+
+        is FreezingTime.LocalDateTime -> {
+            val dateTime = time.value
+
+            mockkStatic(LocalDate::class)
+            every { LocalDate.now() } returns dateTime.toLocalDate()
+
+            mockkStatic(LocalDateTime::class)
+            every { LocalDateTime.now() } returns dateTime
+        }
     }
-}
 
-private fun mockTime(date: LocalDate) {
-    mockkStatic(LocalDate::class)
-    every { LocalDate.now() } returns date
-
-    mockkStatic(LocalDateTime::class)
-    every { LocalDateTime.now() } returns LocalDateTime.of(date, LocalTime.MIN)
 }
 
 private fun unmockTime() {

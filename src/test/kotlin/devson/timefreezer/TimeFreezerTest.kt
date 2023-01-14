@@ -53,18 +53,50 @@ class TimeFreezerTest : FreeSpec({
         }
     }
 
-//    "freeze LocalDateTime" - {
-//        "single block" {
-//            lateinit var `LocalDate#now`: LocalDate
-//            lateinit var `LocalDateTime#now`: LocalDateTime
-//
-//            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
-//                `LocalDate#now` = LocalDate.now()
-//                `LocalDateTime#now` = LocalDateTime.now()
-//            }
-//
-//            `LocalDate#now`.shouldBe(LocalDate.of(2022, 1, 12))
-//            `LocalDateTime#now`.shouldBe(LocalDateTime.of(2022, 1, 12, 1, 2, 3))
-//        }
-//    }
+    "freeze LocalDateTime" - {
+        "single block" {
+            lateinit var `LocalDate#now`: LocalDate
+            lateinit var `LocalDateTime#now`: LocalDateTime
+
+            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
+                `LocalDate#now` = LocalDate.now()
+                `LocalDateTime#now` = LocalDateTime.now()
+            }
+
+            `LocalDate#now`.shouldBe(LocalDate.of(2022, 1, 12))
+            `LocalDateTime#now`.shouldBe(LocalDateTime.of(2022, 1, 12, 1, 2, 3))
+        }
+
+        "nested blocks" {
+            lateinit var `LocalDate#now - 1 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 1 depth`: LocalDateTime
+            lateinit var `LocalDate#now - 2 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 2 depth`: LocalDateTime
+            lateinit var `LocalDate#now - 3 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 3 depth`: LocalDateTime
+
+
+            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
+                freeze(LocalDateTime.of(2022, 1, 8, 2, 3, 4)) {
+                    `LocalDate#now - 2 depth` = LocalDate.now()
+                    `LocalDateTime#now - 2 depth` = LocalDateTime.now()
+
+                    freeze(LocalDateTime.of(2022, 1, 13, 3, 4, 5)) {
+                        `LocalDate#now - 3 depth` = LocalDate.now()
+                        `LocalDateTime#now - 3 depth` = LocalDateTime.now()
+                    }
+                }
+
+                `LocalDate#now - 1 depth` = LocalDate.now()
+                `LocalDateTime#now - 1 depth` = LocalDateTime.now()
+            }
+
+            `LocalDate#now - 1 depth`.shouldBe(LocalDate.of(2022, 1, 12))
+            `LocalDateTime#now - 1 depth`.shouldBe(LocalDateTime.of(2022, 1, 12, 1, 2, 3))
+            `LocalDate#now - 2 depth`.shouldBe(LocalDate.of(2022, 1, 8))
+            `LocalDateTime#now - 2 depth`.shouldBe(LocalDateTime.of(2022, 1, 8, 2, 3, 4))
+            `LocalDate#now - 3 depth`.shouldBe(LocalDate.of(2022, 1, 13))
+            `LocalDateTime#now - 3 depth`.shouldBe(LocalDateTime.of(2022, 1, 13, 3, 4, 5))
+        }
+    }
 })
