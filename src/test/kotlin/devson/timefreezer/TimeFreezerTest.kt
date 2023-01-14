@@ -19,5 +19,37 @@ class TimeFreezerTest : FreeSpec({
             `LocalDate#now`.shouldBe(LocalDate.of(2022, 1, 12))
             `LocalDateTime#now`.shouldBe(LocalDateTime.of(2022, 1, 12, 0, 0, 0))
         }
+
+        "nested blocks" {
+            lateinit var `LocalDate#now - 1 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 1 depth`: LocalDateTime
+            lateinit var `LocalDate#now - 2 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 2 depth`: LocalDateTime
+            lateinit var `LocalDate#now - 3 depth`: LocalDate
+            lateinit var `LocalDateTime#now - 3 depth`: LocalDateTime
+
+
+            freeze(LocalDate.of(2022, 1, 12)) {
+                freeze(LocalDate.of(2022, 1, 8)) {
+                    `LocalDate#now - 2 depth` = LocalDate.now()
+                    `LocalDateTime#now - 2 depth` = LocalDateTime.now()
+
+                    freeze(LocalDate.of(2022, 1, 13)) {
+                        `LocalDate#now - 3 depth` = LocalDate.now()
+                        `LocalDateTime#now - 3 depth` = LocalDateTime.now()
+                    }
+                }
+
+                `LocalDate#now - 1 depth` = LocalDate.now()
+                `LocalDateTime#now - 1 depth` = LocalDateTime.now()
+            }
+
+            `LocalDate#now - 1 depth`.shouldBe(LocalDate.of(2022, 1, 12))
+            `LocalDateTime#now - 1 depth`.shouldBe(LocalDateTime.of(2022, 1, 12, 0, 0, 0))
+            `LocalDate#now - 2 depth`.shouldBe(LocalDate.of(2022, 1, 8))
+            `LocalDateTime#now - 2 depth`.shouldBe(LocalDateTime.of(2022, 1, 8, 0, 0, 0))
+            `LocalDate#now - 3 depth`.shouldBe(LocalDate.of(2022, 1, 13))
+            `LocalDateTime#now - 3 depth`.shouldBe(LocalDateTime.of(2022, 1, 13, 0, 0, 0))
+        }
     }
 })
