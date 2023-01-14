@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation("io.mockk:mockk:1.13.3")
+
     testImplementation(kotlin("test"))
 }
 
