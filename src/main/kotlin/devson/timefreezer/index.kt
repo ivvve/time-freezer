@@ -10,9 +10,13 @@ import java.util.*
 
 private val freezingTimes = Stack<FreezingTime<*, *>>()
 
-fun freeze(mockDate: LocalDate, block: () -> Unit) {
-    freezingTimes.push(FreezingTime.LocalDate(mockDate))
-    mockTime(mockDate)
+private typealias UnitBlock = () -> Unit
+
+fun freeze(mockDate: LocalDate, block: UnitBlock) = freeze(FreezingTime.LocalDate(mockDate), block)
+
+private fun freeze(time: FreezingTime<*, *>, block: UnitBlock) {
+    freezingTimes.push(time)
+    mockTime(time)
 
     try {
         block.invoke()

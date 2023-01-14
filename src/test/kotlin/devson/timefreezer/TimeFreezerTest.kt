@@ -52,4 +52,19 @@ class TimeFreezerTest : FreeSpec({
             `LocalDateTime#now - 3 depth`.shouldBe(LocalDateTime.of(2022, 1, 13, 0, 0, 0))
         }
     }
+
+//    "freeze LocalDateTime" - {
+//        "single block" {
+//            lateinit var `LocalDate#now`: LocalDate
+//            lateinit var `LocalDateTime#now`: LocalDateTime
+//
+//            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
+//                `LocalDate#now` = LocalDate.now()
+//                `LocalDateTime#now` = LocalDateTime.now()
+//            }
+//
+//            `LocalDate#now`.shouldBe(LocalDate.of(2022, 1, 12))
+//            `LocalDateTime#now`.shouldBe(LocalDateTime.of(2022, 1, 12, 1, 2, 3))
+//        }
+//    }
 })
