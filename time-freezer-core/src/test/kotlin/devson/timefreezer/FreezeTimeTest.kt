@@ -5,8 +5,8 @@ import io.kotest.matchers.shouldBe
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class FreezeTest : FreeSpec({
-    "freeze LocalDate" - {
+class FreezeTimeTest : FreeSpec({
+    "freezeTime LocalDate" - {
         "single block" {
             lateinit var `LocalDate#now`: LocalDate
             lateinit var `LocalDateTime#now`: LocalDateTime
