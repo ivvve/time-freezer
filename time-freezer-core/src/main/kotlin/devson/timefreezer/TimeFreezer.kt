@@ -11,10 +11,10 @@ import java.util.*
 internal typealias UnitBlock = () -> Unit
 
 internal class TimeFreezer {
-    private val freezingTimes = Stack<FreezingTime<*, *>>()
+    private val frozenTimes = Stack<FrozenTime<*, *>>()
 
-    fun freeze(time: FreezingTime<*, *>, block: UnitBlock) {
-        this.freezingTimes.push(time)
+    fun freeze(time: FrozenTime<*, *>, block: UnitBlock) {
+        this.frozenTimes.push(time)
         mockTime(time)
 
         try {
@@ -23,9 +23,9 @@ internal class TimeFreezer {
             /****************************************
              * DO NOT USE `return` TO REDUCE INDENT *
              ****************************************/
-            this.freezingTimes.pop()
+            this.frozenTimes.pop()
 
-            when (this.freezingTimes.isEmpty()) {
+            when (this.frozenTimes.isEmpty()) {
                 // when there's no nested mocking
                 true -> {
                     this.unmockTime()
@@ -33,16 +33,16 @@ internal class TimeFreezer {
 
                 // when there's nested mocking
                 false -> {
-                    val previousFreezingTime = freezingTimes.peek()
+                    val previousFreezingTime = frozenTimes.peek()
                     this.mockTime(previousFreezingTime)
                 }
             }
         }
     }
 
-    private fun mockTime(time: FreezingTime<*, *>) {
+    private fun mockTime(time: FrozenTime<*, *>) {
         when (time) {
-            is FreezingTime.LocalDate -> {
+            is FrozenTime.LocalDate -> {
                 val date = time.value
 
                 mockkStatic(LocalDate::class)
@@ -52,7 +52,7 @@ internal class TimeFreezer {
                 every { LocalDateTime.now() } returns LocalDateTime.of(date, LocalTime.MIN)
             }
 
-            is FreezingTime.LocalDateTime -> {
+            is FrozenTime.LocalDateTime -> {
                 val dateTime = time.value
 
                 mockkStatic(LocalDate::class)
