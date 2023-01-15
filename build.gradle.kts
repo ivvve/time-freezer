@@ -4,29 +4,37 @@ plugins {
     kotlin("jvm") version "1.7.21"
 }
 
-group = "devson"
-version = "1.0-SNAPSHOT"
+allprojects {
+    group = "com.tistory.devs0n"
+    version = "0.0.1-SNAPSHOT"
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
 
-dependencies {
-    implementation("io.mockk:mockk:1.13.3")
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-    testImplementation(kotlin("test"))
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.4")
-}
+subprojects {
+    apply {
+        plugin("org.jetbrains.kotlin.jvm")
+    }
 
-tasks.test {
-    useJUnitPlatform()
+    dependencies {
+        testImplementation(kotlin("test"))
+        testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.4")
+    }
 
-    // to resolve mockk issue caused by Java module system (reference: https://github.com/mockk/mockk/blob/master/doc/md/jdk16-access-exceptions.md)
-    jvmArgs(
-        "--add-opens", "java.base/java.time=ALL-UNNAMED",
-    )
-}
+    tasks.test {
+        useJUnitPlatform()
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+        // to resolve mockk issue caused by Java module system (reference: https://github.com/mockk/mockk/blob/master/doc/md/jdk16-access-exceptions.md)
+        jvmArgs(
+            "--add-opens", "java.base/java.time=ALL-UNNAMED",
+        )
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
