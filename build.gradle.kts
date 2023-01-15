@@ -5,7 +5,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.tistory.devs0n"
+    group = "devson.timefreezer"
     version = "0.0.1-SNAPSHOT"
 
     repositories {
