@@ -11,7 +11,7 @@ class FreezeTest : FreeSpec({
             lateinit var `LocalDate#now`: LocalDate
             lateinit var `LocalDateTime#now`: LocalDateTime
 
-            freeze(LocalDate.of(2022, 1, 12)) {
+            freezeTime(LocalDate.of(2022, 1, 12)) {
                 `LocalDate#now` = LocalDate.now()
                 `LocalDateTime#now` = LocalDateTime.now()
             }
@@ -29,12 +29,12 @@ class FreezeTest : FreeSpec({
             lateinit var `LocalDateTime#now - 3 depth`: LocalDateTime
 
 
-            freeze(LocalDate.of(2022, 1, 12)) {
-                freeze(LocalDate.of(2022, 1, 8)) {
+            freezeTime(LocalDate.of(2022, 1, 12)) {
+                freezeTime(LocalDate.of(2022, 1, 8)) {
                     `LocalDate#now - 2 depth` = LocalDate.now()
                     `LocalDateTime#now - 2 depth` = LocalDateTime.now()
 
-                    freeze(LocalDate.of(2022, 1, 13)) {
+                    freezeTime(LocalDate.of(2022, 1, 13)) {
                         `LocalDate#now - 3 depth` = LocalDate.now()
                         `LocalDateTime#now - 3 depth` = LocalDateTime.now()
                     }
@@ -58,7 +58,7 @@ class FreezeTest : FreeSpec({
             lateinit var `LocalDate#now`: LocalDate
             lateinit var `LocalDateTime#now`: LocalDateTime
 
-            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
+            freezeTime(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
                 `LocalDate#now` = LocalDate.now()
                 `LocalDateTime#now` = LocalDateTime.now()
             }
@@ -76,12 +76,12 @@ class FreezeTest : FreeSpec({
             lateinit var `LocalDateTime#now - 3 depth`: LocalDateTime
 
 
-            freeze(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
-                freeze(LocalDateTime.of(2022, 1, 8, 2, 3, 4)) {
+            freezeTime(LocalDateTime.of(2022, 1, 12, 1, 2, 3)) {
+                freezeTime(LocalDateTime.of(2022, 1, 8, 2, 3, 4)) {
                     `LocalDate#now - 2 depth` = LocalDate.now()
                     `LocalDateTime#now - 2 depth` = LocalDateTime.now()
 
-                    freeze(LocalDateTime.of(2022, 1, 13, 3, 4, 5)) {
+                    freezeTime(LocalDateTime.of(2022, 1, 13, 3, 4, 5)) {
                         `LocalDate#now - 3 depth` = LocalDate.now()
                         `LocalDateTime#now - 3 depth` = LocalDateTime.now()
                     }
