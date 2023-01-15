@@ -1,0 +1,35 @@
+name: "ci"
+
+on: [ push ]
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle' # https://github.com/actions/setup-java#caching-packages-dependencies
+
+      - name: gradle test
+        run: ./gradlew test 2> test-error.log
+
+      - name: cat error log if test failed
+        if: failure()
+        run: cat test-error.log
+
+      - name: test report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: "**/build/test-results/**/*.xml"
