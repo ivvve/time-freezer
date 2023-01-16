@@ -11,9 +11,9 @@ import java.util.*
 internal typealias UnitBlock = () -> Unit
 
 internal class TimeFreezer {
-    private val frozenTimes = Stack<FrozenTime<*, *>>()
+    private val frozenTimes = Stack<FrozenTime>()
 
-    fun freeze(time: FrozenTime<*, *>, block: UnitBlock) {
+    fun freeze(time: FrozenTime, block: UnitBlock) {
         this.frozenTimes.push(time)
         mockTime(time)
 
@@ -40,7 +40,7 @@ internal class TimeFreezer {
         }
     }
 
-    private fun mockTime(time: FrozenTime<*, *>) {
+    private fun mockTime(time: FrozenTime) {
         when (time) {
             is FrozenTime.LocalDate -> {
                 val date = time.value
